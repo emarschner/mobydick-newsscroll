@@ -1,0 +1,903 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui.css" />
+    <style type="text/css">
+      body {
+        padding: 0;
+        margin: 0;
+        padding-bottom: 50ex;
+        background: #fcfcfc;
+      }
+      #moby-dick-content a {
+        color: #39f;
+      }
+      #moby-dick-content p,
+      #moby-dick-content blockquote {
+        padding: .5ex 2ex;
+        margin: 0;
+        text-align: justify;
+      }
+      #moby-dick-content blockquote {
+        padding-left: 3ex;
+        font-weight: bold;
+        font-size: 2ex;
+      }
+      #moby-dick-content .arrow {
+        vertical-align: 15%;
+      }
+      #moby-dick-content .total-count,
+      #moby-dick-content .before-count,
+      #moby-dick-content .after-count {
+        margin: 3ex 40px;
+        padding-left: 1ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 100;
+        font-size: 3ex;
+      }
+      #moby-dick-content .small {
+        font-size: 1.25ex;
+      }
+      #moby-dick-content > .controls {
+        margin: 3ex 40px;
+        padding-left: 1.5ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 200;
+      }
+      #moby-dick-content .admin-controls {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        background: white;
+        height: 3ex;
+        padding: 1ex 2ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 200;
+        font-size: 2ex;
+        box-shadow: 0 0 15px #ccc;
+      }
+      #moby-dick-content #scrollbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 40px;
+        padding: 60px 0 20px;
+        background: rgba(211, 232, 252, 1);
+        box-shadow: 0 0 15px gray;
+        z-index: 10000;
+      }
+      #moby-dick-content #scrollbar h1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 400;
+        font-size: 3ex;
+        margin: 0;
+        padding: 7px 14px;
+        background: white;
+        box-shadow: 0 0 15px #ccc;
+      }
+      #moby-dick-content #scrollbar #slider {
+        height: 100%;
+        width: 1px;
+        margin: 0 auto;
+        border-radius: 0;
+        border: 0;
+        background: black;
+      }
+      #moby-dick-content #scrollbar #slider .tick {
+        position: absolute;
+        height: 5px;
+        width: 5px;
+        margin-left: -3px;
+        margin-top: -2px;
+        border-radius: 5px;
+        cursor: pointer;
+        border: 1px solid #666;
+      }
+      #moby-dick-content #scrollbar #slider .tick .text {
+        display: none;
+        position: absolute;
+        top: -5px;
+        left: 20px;
+        padding: .5ex 1ex;
+        background: #ffd;
+        box-shadow: 0 0 5px gray;
+        font-size: 1.5ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 600;
+      }
+      #moby-dick-content #scrollbar #slider .tick:hover {
+        height: 9px;
+        width: 9px;
+        margin-left: -5px;
+        margin-top: -4px;
+        border-radius: 9px;
+      }
+      #moby-dick-content #scrollbar #slider .tick:hover .text {
+        display: block;
+      }
+      #moby-dick-content #scrollbar #slider .article-tick {
+        background: #39f;
+        z-index: 2000;
+      }
+      #moby-dick-content #scrollbar #slider .important-tick {
+        background: #afa;
+        z-index: 1000;
+      }
+      #moby-dick-content #scrollbar #slider .end-tick {
+        background: black;
+        top: 100%;
+        z-index: 0;
+      }
+      #moby-dick-content #scrollbar #slider .ui-slider-handle {
+        outline: none;
+        border: none;
+        background: black;
+        margin-left: -2px;
+        margin-bottom: -8px;
+        border-radius: 15px;
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+      }
+      #moby-dick-content #scrollbar #slider .ui-slider-handle:hover {
+        margin-left: -5px;
+        margin-bottom: -11px;
+        border-radius: 21px;
+        width: 21px;
+        height: 21px;
+      }
+      #moby-dick-content #scrollbar #slider .ui-slider-range {
+        border: 0;
+        background: black;
+        margin-left: -3px;
+        width: 7px;
+      }
+      #moby-dick-content #scrollbar #slider .ui-slider-handle:active,
+      #moby-dick-content #scrollbar #slider .ui-state-active {
+        background: #39f;
+      }
+      #moby-dick-content .admin-controls a {
+        display: block;
+        float: right;
+        margin-right: 1ex;
+        line-height: 3ex;
+      }
+      #moby-dick-content .admin-controls a.admin-off {
+        display: none;
+      }
+      #moby-dick-content .admin-controls a.add-btn {
+        display: none;
+      }
+      #moby-dick-content .add-popup {
+        display: none;
+        position: fixed;
+        bottom: 4.5ex;
+        right: 0;
+        background: white;
+        height: 2.5ex;
+        padding: 1ex 2ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 200;
+        box-shadow: 0 0 15px #ccc;
+      }
+      #moby-dick-content .topic {
+        background: white;
+        padding-bottom: 1ex;
+        box-shadow: 0 0 15px gray;
+      }
+      #moby-dick-content .topic h1 {
+      }
+      #moby-dick-content .connector {
+        border-width: 1ex 0;
+        border-color: red;
+        border-style: solid;
+        margin: 3ex 0;
+      }
+      #moby-dick-content .hidden {
+        display: none;
+      }
+      #moby-dick-content .article {
+        margin: 0;
+        margin-left: 40px;
+        width: 900px;
+        box-shadow: 3px 0 10px #aaa;
+        border-top-right-radius: 3ex;
+        background: white;
+      }
+      #moby-dick-content .article .header {
+        margin-top: 3ex;
+        padding: 1ex;
+        background: rgba(51, 153, 255, .2);
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 200;
+        border-top-right-radius: 3ex;
+        position: relative;
+      }
+      #moby-dick-content .article .header h2 {
+        padding-left: .5ex;
+        margin: 0;
+        font-weight: 200;
+      }
+      #moby-dick-content .article .header p {
+        padding-left: 1ex;
+      }
+      #moby-dick-content .article .header .author {
+        font-weight: 500;
+      }
+      #moby-dick-content .article .header .expand {
+        position: absolute;
+        bottom: 1ex;
+        right: 0;
+        font-size: 1.75ex;
+        font-weight: 400;
+      }
+      #moby-dick-content .article .before-count,
+      #moby-dick-content .article .after-count {
+        border-right: 1ex solid #ccc;
+        font-size: 2ex;
+        margin: 0;
+        margin-bottom: 2px;
+        padding: .5ex 2ex;
+        cursor: pointer;
+        display: none;
+      }
+      #moby-dick-content .article .before-count:hover,
+      #moby-dick-content .article .after-count:hover {
+        background: rgba(51, 153, 255, .1);
+        border-color: #ff0;
+      }
+      #moby-dick-content .article .section {
+        border-right: 1ex solid #ddd;
+        margin-bottom: 2px;
+        font-family: Century Schoolbook, Palatino, Georgia, serif;
+      }
+      #moby-dick-content .article .section:hover {
+        border-color: #ff0;
+      }
+      #moby-dick-content .article .section .controls {
+        /*border-top: 1px solid #ccc;*/
+        font-size: 1.75ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 200;
+        cursor: pointer;
+      }
+      #moby-dick-content .article .section .controls img {
+        padding-top: 1px;
+        display: none;
+      }
+      #moby-dick-content .article .section .controls .snippet {
+        display: block;
+        float: left;
+        margin-left: 1ex;
+        padding-right: 0;
+        font-family: Century Schoolbook, Palatino, Georgia, serif;
+        color: #ddd;
+      }
+      #moby-dick-content .article .section.important .controls .snippet,
+      #moby-dick-content .article .section.visible .controls .snippet {
+        display: none;
+      }
+      #moby-dick-content .article .section.important,
+      #moby-dick-content .article .section.important .controls {
+        border-color: #afa;
+      }
+      #moby-dick-content .article .section.unimportant,
+      #moby-dick-content .article .section.unimportant .controls {
+        border-color: #faa;
+      }
+      #moby-dick-content .article .section .split,
+      #moby-dick-content .article .combine {
+        display: none;
+        font-size: 1.75ex;
+        font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+        font-weight: 200;
+        cursor: pointer;
+        padding: 0 2ex;
+        padding-bottom: 2px;
+        /*border-top: 1px solid #ccc;*/
+      }
+      #moby-dick-content.admin .article .combine {
+        display: block;
+        margin-top: -2px;
+        padding: 0;
+        text-align: right;
+      }
+      #moby-dick-content .article .section .split a,
+      #moby-dick-content .article .combine a,
+      #moby-dick-content .article .section .controls a {
+        color: rgba(51, 153, 255, 0.2); /* light text */
+        text-decoration: none;
+      }
+      #moby-dick-content .article .section .split a,
+      #moby-dick-content .article .combine a {
+        color: rgba(51, 153, 255, 0.5); /* light text */
+      }
+      #moby-dick-content .article .section:hover .controls .snippet {
+        color: black;
+      }
+      #moby-dick-content .article .section .split:hover a,
+      #moby-dick-content .article .combine:hover a,
+      #moby-dick-content .article .section:hover .controls a {
+        color: rgba(51, 153, 255, 1); /* opaque text */
+      }
+      #moby-dick-content .article .combine:hover {
+        background: rgba(170, 255, 170, .2);
+      }
+      #moby-dick-content .article .section .split:hover {
+        background: #faa;
+        background: rgba(255, 170, 170, .5);
+      }
+      #moby-dick-content .article .section:hover .controls img {
+        display: block;
+      }
+      #moby-dick-content .article .controls {
+        height: 3ex;
+      }
+      #moby-dick-content .article .controls .mark-important,
+      #moby-dick-content .article .controls .mark-unimportant,
+      #moby-dick-content .article .controls .unmark-importance,
+      #moby-dick-content .article .controls .flag {
+        display: block;
+        float: right;
+        margin-right: 1ex;
+        line-height: 3ex;
+      }
+      #moby-dick-content .article .controls .show,
+      #moby-dick-content .article .controls .hide {
+        display: block;
+        float: left;
+        margin-left: 1ex;
+        line-height: 3ex;
+      }
+      #moby-dick-content .article .controls .unmark-importance,
+      #moby-dick-content .article .section.important .controls .mark-important,
+      #moby-dick-content .article .section.unimportant .controls .mark-unimportant {
+        display: none;
+      }
+      #moby-dick-content .article .section.important .controls .unmark-importance,
+      #moby-dick-content .article .section.unimportant .controls .unmark-importance {
+        display: block;
+      }
+      #moby-dick-content .article .section .controls .hide,
+      #moby-dick-content .article .section.important .controls .show,
+      #moby-dick-content .article .section.important .controls .hide {
+        display: none;
+      }
+      #moby-dick-content .article .section.visible .controls .show {
+        display: none;
+      }
+      #moby-dick-content.admin .article .section.important .split,
+      #moby-dick-content.admin .article .section.visible .split,
+      #moby-dick-content .article .section.visible .controls .hide {
+        display: block;
+      }
+      #moby-dick-content .article .section p,
+      #moby-dick-content .article .section blockquote,
+      #moby-dick-content .article .section .split {
+        display: none;
+      }
+      #moby-dick-content .article .section .media {
+        display: none;
+        margin: 0 2ex;
+      }
+      #moby-dick-content .article .section.important p,
+      #moby-dick-content.admin .article .section.important .split,
+      #moby-dick-content .article .section.important .media {
+        display: block;
+      }
+    </style>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/mobydick.js"></script>
+  </head>
+  <body id="body">
+    <div id="moby-dick-content">
+      <div class="admin-controls">
+        <a href="#" class="admin-on">Turn admin features on</a>
+        <a href="#" class="admin-off">Turn admin features off</a>
+        <a href="#" class="add-btn">Add Article</a>
+      </div>
+      <div class="add-popup">
+        <select id="article-select">
+          <option value="occupy-la">Occupy Los Angeles Protester Sergio Ballesteros Arrested At Artwalk For Alleged Lynching</option>
+          <option value="occupy-mlk">Occupy Wall Street Protesters Hold Candlelight Vigil For Martin Luther King Jr. In New York</option>
+          <option value="occupy-davos">Occupy Davos: Protesters Ready Igloos For World Economic Forum</option>
+        </select>
+        <a href="#" class="add-article">Add</a>
+      </div>
+      <div class="topic">
+        <h1 class="title"><a target="_blank" href="http://www.huffingtonpost.com/news/occupy-wall-street/"><img src="http://images.huffingtonpost.com/bignews/classic_blog/topics/1963275/image_1320003275.jpeg"/></a></h1>
+      </div>
+      <div id="scrollbar">
+        <h1>&darr;&nbsp;Timeline&nbsp;<span class="small">(start)</span></h1>
+        <div id="slider">
+          <div class="end-tick tick"></div>
+        </div>
+      </div>
+      <!--
+      <div class="connector">
+        <div class="header">
+          <h2 class="title">Convoluted argument about relevance... ([optional] connective text between articles)</h2>
+          <p class="author">JZ</p>
+          <p class="date">1/15/2012 (note: date is after both articles' publish dates, but placed between them...)</p>
+        </div>
+        <p>These two articles are related.</p>
+        <p><img src="http://placekitten.com/400/200"/></p>
+        <p>So says the kitty.</p>
+      </div>
+      <div class="total-count">
+        <span class="count">&nbsp;&nbsp;</span> articles total
+      </div>
+      -->
+      <div class="article">
+        <div class="header">
+          <h2 class="title">'Occupy Wall Street' Protesters Vow To Camp Near Wall St. Indefinitely</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2011/09/21/occupy-wall-street-protest_n_974693.html">http://www.huffingtonpost.com/2011/09/21/occupy-wall-street-protest_n_974693.html</a></p>
+          <p class="author"><a href="http://www.huffingtonpost.com/jillian-berman">Jillian Berman</a></p>
+          <p class="date">09/21/11 06:40 PM ET</p>
+        </div>
+        <div class="section important">
+          <p>NEW YORK &mdash; In a small granite plaza a block from the New York Stock Exchange, a group of 20-somethings in flannel pajama pants and tie-dyed T-shirts are plotting the demise of Wall Street as we know it.</p>
+        </div>
+        <div class="section">
+          <p>They have been there since Saturday, sleeping on cardboard boxes, eating pizza and take-out dinners that were paid for by donations to their cause. There are only about 200 of them left now, though they started out 1,500 strong.</p>
+          <p>Welcome to the headquarters of "Occupy Wall Street," a place where topless women stood Wednesday morning on the corner shouting "I can't afford a shirt!" while construction workers eagerly snapped photos on their phones. A small group of the protesters wound their way through the streets of lower Manhattan escorted by police officers, blaring bullhorns and chanting "Resist! Stand Up! There comes a time when the people rise up!"</p>
+        </div>
+        <div class="section important">
+          <p>What, exactly, they are protesting is somewhat unclear. When asked what they are fighting, they gave a variety of responses ranging from Wall Street to global warming. On its website, the group proclaims: "We, the people of the United States of America, considering the crisis at hand, now reassert our sovereign control of our land."</p>
+        </div>
+        <div class="section">
+          <p>Sam Wood, an unemployed 21-year-old, said he was there because he doesn't think it's fair "the way that the rich get more breaks than the poor."</p>
+          <p>"What I really want to achieve is to educate people about what's going on with the economy right now," he said as he bumped into another protester waving an American flag. "A couple of the ways that we might be able to fix it, you know?"</p>
+        </div>
+        <div class="section">
+          <p>A barricade was set up to protect the NYSE building as they marched past it. Some people in suits stopped in the street to gaze curiously at the scene in the plaza &ndash; a strange jumble of people carrying signs, playing snare drums and openly smoking marijuana on benches.</p>
+          <p>Police watched the proceedings carefully after a scuffle Tuesday that led to seven arrests and one injured protester. Most of those arrested were given disorderly conduct summonses and released.</p>
+          <p>Four more protesters were arrested Wednesday for disorderly conduct and released.</p>
+        </div>
+        <div class="section">
+          <p>Ryan Reed, 21, a senior at Rutgers University, was missing class to attend the protest, but his professors are letting him make up the work by writing papers about the experience.</p>
+          <p>"The enemy is the big business leaders of Wall Street, the big oil company leaders, the coal company leaders, the big military industrial leaders," he said. "I came out here because what I see &ndash; and what I feel most people in this country see &ndash; is an economy and a system that's collapsing."</p>
+        </div>
+        <div class="section">
+          <p>Kaitlyn Leigh, a 21-year-old from Rochester, N.Y., said she is going to move out of her apartment and stay here indefinitely because she's been so inspired by what she's seen.</p>
+          <p>"It's about creating a community in this liberated space," she said. "It's about having the ability to have people's needs met, whether it be food, clothing, shelter."</p>
+        </div>
+        <div class="section unimportant">
+          <p>Every afternoon, the group convenes at the center of the plaza for what they call a "General Assembly," a meeting during which they map out their tactics for the next day. Forbidden from using a microphone &ndash; they don't have the proper permits &ndash; the group got creative.</p>
+          <p>"What we do is a people's microphone," Reed said. "So the person who's speaking says a couple of words and then the whole crowd repeats it so everyone can hear. It's actually beautiful."</p>
+          <p>For Reed, at least, an ideal outcome for the situation would be a near-shutdown of Wall Street, with protesters descending upon Wall Street and preventing bankers from getting to their desks. But he realizes that may not happen anytime soon &ndash; particularly not before he returns to class next week.</p>
+          <p>"So far we haven't had the numbers to clog the kind of traffic we need to clog," he admitted.</p>
+        </div>
+        <div class="section important">
+          <p>Though the crowd has thinned as the days pass, the group is vowing to stick it out as long as possible. Bill Csapo, an unofficial spokesman for the protesters, said they've gained access to a commercial kitchen and plan to start cooking meals for the group in the next day or two. On Saturday night, people donated $10,000 worth of pizzas.</p>
+        </div>
+        <div class="section">
+          <p>Csapo, of Cleveland, Tenn., hasn't actually traveled to Manhattan for the event. He got involved by meeting some of the organizers on Internet forums, which is how the whole thing got started. But he said the occupiers &ndash; a term he prefers instead of "protesters" &ndash; aren't leaving anytime soon.</p>
+          <p>"I'm currently unemployed and loving what I'm doing," Leigh said. "I'm going to stay here until the end."</p>        
+        </div>
+      </div>
+      <div class="before-count">
+        <span class="arrow">&uarr;</span>
+        <span class="count">&nbsp;&nbsp;</span>
+        articles before this one...
+        <span class="small">use timeline (&larr;) to expand</span>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">After Occupy Wall Street Encampment Ends, NYC Protesters Become Nomads</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/12/occupy-wall-street-after-encampment-protesters-nomads_n_1201542.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/12/occupy-wall-street-after-encampment-protesters-nomads_n_1201542.html?ref=occupy-wall-street</a></p>
+          <p class="date">1/12/12 09:14 AM ET</p>
+        </div>
+        <div class="section">
+          <div class="media">
+            <img width="570" src="http://i.huffpost.com/gen/463473/thumbs/r-OCCUPY-WALL-STREET-NOMADS-NEW-YORK-large570.jpg" alt="Occupy Wall Street Nomads New York" id="img_caption_1201542">
+          </div>
+        </div>
+        <div class="section">
+          <p>NEW YORK (AP) -- It was only a few nights after the Occupy protesters began sleeping in his church sanctuary when Pastor Bob Brashears realized that his laptop was missing.</p>
+          <p>The refugees from Manhattan's Zuccotti Park had found their way to his cavernous Presbyterian church on a cold winter evening, hoping to stay for a few nights, maybe longer. It was the latest stopover for the nomadic group, which has been living in a rotating series of churches since Mayor Michael Bloomberg shut down their camp in November.</p>
+          <p>"There was a sense of shock and sadness that it had happened," said Brashears, whose laptop will soon be replaced by Occupy organizers. "And there's a common understanding that if there's one more theft in the church, that's it."</p>
+        </div>
+        <div class="section important">
+          <p>This is what the Occupy encampment has become: A band of homeless protesters with no place to go. Amid accusations of drug use and sporadic theft, they've been sleeping on church pews for weeks, consuming at least $20,000 of the funds that Occupy Wall Street still has in its coffers. Their existence is being hotly debated at Occupy meetings: Are these people truly "Occupiers" who deserve free food and a roof over their heads?</p>
+        </div>
+        <div class="section">
+          <p>"We don't do this out of charity," said 34-year-old Ravi Ahmad, who works for Columbia University and volunteers with Occupy in her spare time. "We do this so that whoever wants to work in the movement can work in the movement. This is a meritocracy."</p>
+          <p>But money is draining rapidly from Occupy's various bank accounts, which currently amount to about $344,000. Including church maintenance costs and meals, living expenses are more than $2,000 per week.</p>
+        </div>
+        <div class="section unimportant">
+          <p>The movement that denounces corporate greed and economic inequality has been fighting to stay afloat in the city where it first began. Media attention and donations have dropped off. And although protesters regularly meet to plan demonstrations, recent marches have had none of the spectacle that captivated New Yorkers and watchers worldwide.</p>
+          <p>On Monday, the metal barricades surrounding Zuccotti Park were removed for the first time since the November raid. But protesters still can't set up tents to camp overnight – and they don't have a long-term solution to the housing problem.</p>
+          <p>Their current home is Brashears' West-Park Presbyterian Church, a stately 100-year-old house of worship on the Upper West Side that badly needs renovation. Occupy organizers see the cracks in the ceiling as an opportunity to repay the favor by helping to fix the place up.</p>
+          <p>There are about 70 Occupiers staying there and another 30 or so at Park Slope United Methodist Church in Brooklyn.</p>
+        </div>
+        <div class="section unimportant">
+          <p>"Everybody tries to get along, make things work," said Donna Marinelli, 52, of New Britain, Conn., who was sitting on the floor in a sleeping bag alongside her cousin, David Monarca. "We were in the park in tents until they raided us. We wanted to stay for the movement. We didn't want to leave when we just got here."</p>
+          <p>During the daylight hours, Marinelli attends Occupy events and volunteers at an Occupy kitchen in Brooklyn. Nobody is allowed to stay in the church during the day. At night, the place is patrolled by an Occupy security team led by Marine Corps Sgt. Halo Showzah, a 27-year-old Iraq war veteran from the Bronx.</p>
+          <p>"We walk around the church with flashlights, making noise to wake these people up and making sure they're good," he said. "No sex in the church, no drinking, no smoking, no shooting, no sniffing."</p>
+          <p>The church was quiet and cozy on Wednesday night as about two dozen people staked out their respective corners of the room – some prefer the balcony, others like to curl up by the door. Someone fiddled around on the piano and sang a few songs as a cat watched from one of the pews. Showzah wandered around and chatted with everyone, making jokes and doling out advice to the piano singer.</p>
+        </div>
+        <div class="section important">
+          <p>The security threat is very real here. At least 30 percent of the crowd is a mix of chronically homeless, drug-addicted people, some of whom suffer from "psychological issues," as several protesters put it delicately. Among other rules, the pastor has demanded that the Occupiers station at least one mental health expert "within easy reach" of the church every night.</p>
+        </div>
+        <div class="section">
+          <p>Even some of the church dwellers themselves are fed up with their fellow pew mates. Chris Allen, 36, is working on a backup plan in case they get kicked out.</p>
+          <p>"I feel people are messing up the church and we're not gonna have it much longer, so I'm worried about putting money in my pocket," said Allen, an unemployed construction worker from Long Island who lives here with his wife. "Because when it snows and I have nowhere to go, I'm not gonna be stuck on the streets like everyone else for being idiots."</p>
+          <p>Who is allowed to stay at the church is a source of contention and perpetual infighting. If you're not on the official list kept by Occupy organizers, you're not allowed inside. But it's unclear what distinguishes the general populace from an Occupier.</p>
+        </div>
+        <div class="section">
+          <p>One night in December, police officers were called to the Church of St. Paul and St. Andrew when people who weren't on the list came to the door and refused to leave.</p>
+          <p>"I was turned away one night in the cold and rain," said David Everitt-Carlson, a 55-year-old unemployed former advertising executive who lived in a tee-pee at Zuccotti Park. "And I slept at Grand Central Station. I found a place behind a Christmas decoration."</p>
+          <p>About a month ago, a telephone hotline was set up so that people could call and request a spot at one of the churches. But space is limited. And each church sojourn has an expiration date.</p>
+          <p>Some churches willingly opened their doors to provide temporary shelter after the police raid. None of them are equipped to house protesters forever.</p>
+          <p>"It's a lot of wear and tear on the space," said Michael Ellick, a minister at Judson Memorial Church, which housed protesters for several nights in November. "We're broke, so we don't have a custodial staff. We can't be a full-time housing unit."</p>
+        </div>
+        <div class="section">
+          <p>During daylight hours, some people migrate down to Occupy's atrium at 60 Wall St., while others head off to hunt for jobs or disappear into the city. At night, there are often counselors on hand for emotional support.</p>
+          <p>Typical arguments are reminiscent of life at Zuccotti, which had its own share of criminal activity. A frequent complaint, for example, involves a man who apparently never takes showers.</p>
+          <p>"No fistfights, no weapons involved," said Jeff Brewer, 34, an Occupy organizer. "I believe there was a shampoo bottle that was thrown one time."</p>
+          <p>Meals are donations from food pantries and leftovers dropped off by nearby restaurants.</p>
+        </div>
+        <div class="section">
+          <p>The debate over providing food and shelter for the church Occupiers plays into a larger one that has divided New York's protesters ever since the police raid. While some are determined to occupy another space somewhere in the city, others say an encampment is unnecessary and, at its worst, a burden.</p>
+          <p>The church dwellers believe they are carrying the torch for the lost encampment – and that, someday, they will form the foundation of a new one.</p>
+          <p>"We really have been calling it the `occupiers army' that we are building," explained protester Jason Harris, a teacher from Massachusetts.</p>
+          <p>First, though, they'll have to find a way to survive the winter. Brashears hasn't yet decided whether he will allow the protesters to stay at West-Park beyond next week. If they are truly dedicated to forming a community – and not simply seeking shelter within the church's walls – he'll be more willing to extend their unspoken lease.</p>
+          <p>"It's a sort of sink or swim situation," he said. "I think, long-term, they have to make a decision about what, exactly, their movement is about."</p>
+        </div>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">Goldman's Reputation Recovers From Accusations Of Systematically Betting Against Clients: Survey</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/12/goldman-sachs-popularity_n_1202327.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/12/goldman-sachs-popularity_n_1202327.html?ref=occupy-wall-street</a></p>
+          <p class="author"><a href="http://www.huffingtonpost.com/jillian-berman">Jillian Berman</a></p>
+          <p class="date">1/12/12 02:57 PM ET</p>
+        </div>
+        <div class="section important">
+          <div class="media">
+            <img width="570" src="http://i.huffpost.com/gen/335502/thumbs/r-GOLDMAN-large570.jpg" alt="Goldman" id="img_caption_1202327">
+          </div>
+        </div>
+        <div class="section unimportant">
+          <p>Occupy Wall Street supporters surely will be none too pleased by this. </p>
+        </div>
+        <div class="section important">
+          <p>Goldman Sachs has <a href="http://www.brandindex.com/ranking/top-us-buzz-improvers-2011" target="_hplink">returned to levels of popularity</a> not seen since a 2010 lawsuit alleging fraud during the subprime mortgage crisis severely damaged the company's reputation, according to a You Gov BrandIndex survey. In June 2010, the Securities and Exchange Commission charged Goldman with a $1 billion fraud, alleging that bank officials didn't disclose that they were <a href="http://www.huffingtonpost.com/2010/04/16/goldman-sachs-fraud-expla_n_540938.html#s81812&title=Goldman_Creates_A" target="_hplink">betting against subprime mortgages</a> that they themselves had pushed on to clients.</p>
+        </div>
+        <div class="section">
+          <p>Goldman also ranked as one of the <a href="http://www.huffingtonpost.com/2010/04/16/goldman-sachs-fraud-expla_n_540938.html#s81812&title=Goldman_Creates_A" target="_hplink">survey's most improved brands</a>, though there were a few other infamous names in the list, including British Petroleum, the oil giant notorious for its role in the 2010 Deepwater Horizon spill in the Gulf of Mexico. </p>
+          <p>Still, it's doubtful that the bank that many love to hate is permanently back in America's good graces. <a href="http://www.huffingtonpost.com/2011/12/12/occupy-wall-street-squidd_n_1144561.html" target="_hplink">Occupy protesters protested the bank's role in the financial crisis by marching on Goldman's New York headquarters</a> last month dressed as giant squids -- a reference to Matt Taibbi's characterization of the investment bank as "<a href="http://www.rollingstone.com/politics/news/the-great-american-bubble-machine-20100405" target="_hplink">a great vampire squid</a> wrapped around the face of humanity."</p>
+          <p>That wasn't the investment bank's first run-in with the Occupy movement. About a month after the Occupy protests began, Goldman allegedly sent a memo to staffers <a href="http://www.huffingtonpost.com/2011/10/13/goldman-sachs-employees-occupy-wall-street_n_1008698.html" target="_hplink">telling them to stay out of Zuccotti Park</a>, perhaps to avoid any clashes with the demonstrators. In addition, <a href="http://www.huffingtonpost.com/2011/10/24/goldman-sachs-backs-out-of-fundraiser-featuring-occupy-wall-street_n_1029284.html" target="_hplink">the bank pulled out of sponsoring a fundraiser in October</a> after finding out that Occupy Wall Street was going to be one of the honorees. </p>
+        </div>
+        <div class="section important">
+          <p>Goldman is currently dealing with holes left at the top of its leadership. <a href="http://www.reuters.com/article/2012/01/12/us-goldman-exits-idUSTRE80B02720120112" target="_hplink">Two of the bank's high-ranking leaders</a> decided to leave the firm yesterday, according to Reuters.</p>
+          <p>Despite that, Goldman no doubt remains hugely popular among many in the business community, as shown by <a href="http://www.businessweek.com/news/2011-12-28/goldman-sachs-winning-ceos-as-global-no-1-with-m-a-equity-deals.html" target="_hplink">it recently winning the top spot in a ranking of firms</a> doing global takeovers -- an indication that the firm is still trusted by many corporate CEOs.</p>
+        </div>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">Elijah Cummings Questions Darrell Issa's Priorities In Occupy DC Probe</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/12/elijah-cummings-questions_n_1202864.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/12/elijah-cummings-questions_n_1202864.html?ref=occupy-wall-street</a></p>
+          <p class="author">Emma Dumain</p>
+          <p class="date">1/12/12 05:12 PM ET</p>
+        </div>
+        <div class="section important">
+          <div class="media">
+            <img width="570" src="http://i.huffpost.com/gen/464257/thumbs/r-DARRELL-ISSA-large570.jpg" alt="Darrell Issa" id="img_caption_1202864">
+          </div>
+        </div>
+        <div class="section">
+          <p>Rep. Darrell Issa (R-Calif.) appears to be in the early stages of launching an investigation into the Department of the Interior's handling of the Occupy DC encampment at McPherson Square, an effort that his panel’s top Democrat thinks is a waste of time.</p>
+          <p>"Our committee has the power to achieve great benefits investigating waste, fraud and abuse on behalf of the American people," Oversight and Government Reform ranking member Elijah Cummings (D-Md.) said in a statement provided to Roll Call, "but investigating Occupy Wall Street protestors is a poor use of our resources and authority."</p>
+        </div>
+        <div class="section important">
+          <p>Issa's interest in the situation began late last year when he sent a letter to Interior Secretary Ken Salazar asking for answers and documents relating to protestors' around-the-clock presence at McPherson Square since Sept. 17. Issa believes it could constitute "camping," which would be in violation of the law.</p>
+        </div>
+        <div class="section">
+          <p>He also said their presence could be harming public grounds that received more than $400,000 in upgrades as part of the 2009 economic stimulus law.</p>
+        </div>
+        <div class="section important">
+          <p>A Jan. 6 letter from National Park Service Deputy Director of Operations Peggy O'Dell suggested that her agency, which is housed within the Department of the Interior, has determined that demonstrators' presence at McPherson Square falls in line with previous activities that have been judged to be protected by First Amendment free speech and assembly rights.</p>
+        </div>
+        <div class="section">
+          <p>"The NPS ... takes seriously its responsibility to protect the resources that have been entrusted in its care," wrote O’Dell. "First Amendment activities, however, often come with a measure of wear and tear on our national parks, not dissimilar to what results from frequent and high-volume use by visitors and tourists to our parks in the National Capital Region and around the country."</p>
+          <p>O'Dell said that of the $400,000 stimulus grant, only $8,000 was used to re-sod the park with new grass. The rest, she said, was spent on "hardscape improvements that have not, to our knowledge, been damaged over the course of the demonstration."<br />In lieu of answering Issa's lengthy list of questions, O'Dell said the Park Service would be happy to brief the committee in more detail.</p>
+          <p>Issa fired back in a Jan. 10 letter, writing that a failure to submit requested materials by Jan. 23 could result in the committee resorting to "compulsory processes to obtain this information" -- namely, subpoenas.</p>
+        </div>
+        <div class="section">
+          <p>Interior Department spokesman Adam Fetcher has maintained that the Interior Department is in compliance with Issa's demands.</p>
+          <p>"The Department has provided a thorough response to Chairman Issa's letter," he said. "We will continue to work with the committee to provide information that is responsive to this request."</p>
+        </div>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">Gray wants Occupy protesters removed from McPherson Square</h2>
+          <p class="url"><a target="_blank" href="http://www.washingtonpost.com/blogs/mike-debonis/post/gray-wants-occupy-protesters-removed-from-mcpherson-square/2012/01/12/gIQAz9gYuP_blog.html">http://www.washingtonpost.com/blogs/mike-debonis/post/gray-wants-occupy-protesters-removed-from-mcpherson-square/2012/01/12/gIQAz9gYuP_blog.html</a></p>
+          <p class="author"><a href="http://www.washingtonpost.com/mike-debonis/2011/02/24/ABbxUYN_page.html">Mike DeBonis</a></p>
+          <p class="date">01/12/2012 06:50 PM ET</p>
+        </div>
+        <div class="section unimportant">
+          <p>Mayor <b>Vincent C. Gray</b> called on the National Park Service today to remove protesters from McPherson Square to &ldquo;allow for elimination of the rat infestation, clean up, and restoration&rdquo; of the downtown park.</p>
+        </div>
+        <div class="section important">
+          <p>In <a target="_blank" href="https://www.documentcloud.org/documents/283231-vincent-gray-letter-to-national-park-service-1.html">a letter</a> to Park Service Director <b>Jonathan B. Jarvis</b>, Gray suggests moving the McPherson protesters, who have camped in the park since October, to a separate encampment at Freedom Plaza.</p>
+          <p>Because both sites are on Park Service land, Gray does not have the authority to directly order an eviction. But today&rsquo;s demand is Gray&rsquo;s most dramatic pronoucement yet on the ongoing protests.</p>
+          <p>His letter was accompanied by a <a target="_blank" href="http://www.washingtonpost.com/r/2010-2019/WashingtonPost/2012/01/13/Local-Politics/Graphics/ensuring_health_safety_OccupyDC.pdf">memorandum from the city&rsquo;s health director</a> reporting that both encampments are at risk for outbreaks of &ldquo;communicable disease, hypothermia or food borne illness.&rdquo;</p>
+        </div>
+        <div class="section">
+          <p><b>Mohammed N. Akhter</b> reported that the city &ldquo;must now reassess and take steps to protect the health and safety of the demonstrators, as well as District residents and visitors.&rdquo; The memo followed several dozen visits to the encampments.</p>
+          <p>The McPherson Square site, Akhter said, &ldquo;has some serious concerns that should be addressed immediately.&rdquo; The problems include an ongoing risk of hypothermia, fire threats from the use of candles and propane heaters, inadequate food sanitation and a rodent infestation that is &ldquo;clearly visible even during daylight hours.&rdquo;</p>
+          <p>&rdquo;Several rodent burrows were noted by staff and rodents were seen inside of camping tents, as well as within the makeshift kitchen tent,&rdquo; Akhter wrote.</p>
+          <p>At Freedom Plaza, he noted, there is a &ldquo;greater attempt being made to adhere to good sanitary practices with waste disposal and food preparation.&rdquo;</p>
+        </div>
+        <div class="section">
+          <p><b>Sam Jewler</b>, a media organizer for the McPherson protesters, said the concerns cited by Akhter are overstated and otherwise managable. &ldquo;We haven&rsquo;t had any hypothermia. We haven&rsquo;t had any disease problem,&rdquo; he said. &ldquo;We&rsquo;ve complied with everything they&rsquo;ve asked us to do. There&rsquo;s no reason that wouldn&rsquo;t continue to be the case.&rdquo;</p>
+          <p>As for the rodents, Jewler said, &ldquo;We do have rats; most public parks have rats. We hate rats as much as anybody else does. We&rsquo;d love to work with them on getting the rats out. We don&rsquo;t think that requires getting the tents out.&rdquo;</p>
+          <p>In an <a target="_blank" href="http://www.washingtonpost.com/blogs/post_now/post/city-rat-population-has-exploded-around-occupy-dc-camps/2012/01/09/gIQA6AoylP_blog.html">interview Wednesday with The Washington Post</a>, Akhter said conditions at McPherson Square were &ldquo;no different than refu&shy;gee camps&rdquo; &mdash; a characterization Jewler called &ldquo;totally inappropriate.&rdquo;</p>
+        </div>
+        <div class="section">
+          <p>Rep. <b>Darrell Issa</b> (R-Calif.), the chairman of the House Oversight Committee, issued a statement late Thursday calling the city&rsquo;s report &ldquo;disturbing&rdquo; and &ldquo;a blunt assessment of the situation created by the National Park Service&rsquo;s decision to ignore laws designed to protect the public.&rdquo;</p>
+          <p>Issa, who has <a target="_blank" href="http://www.washingtonpost.com/blogs/post_now/post/issa-seeks-answers-on-occupy-dc-from-park-service/2012/01/10/gIQAoH9eoP_blog.html">asked the Park Service to produce documents</a> explaining its policy toward the protests, said it &ldquo;has so far been more interested in making excuses than protecting the public.&rdquo;</p>
+        </div>
+        <div class="section">
+          <p><b>Bill Line</b>, a Park Service spokesman, said Gray&rsquo;s letter has been received, but he had not read the letter and did not have comment Thursday evening. Line reiterated earlier comments that the Park Service must adhere to court rulings protecting protesters&rsquo; <a target="_blank" href="http://www.washingtonpost.com/blogs/post_now/post/issa-seeks-answers-on-occupy-dc-from-park-service/2012/01/10/gIQAoH9eoP_blog.html">right to maintain a &ldquo;24-hour vigil&rdquo;</a> on federal land.</p>
+        </div>
+        <div class="section">
+          <p>Akhter did not recommend any particular course of action in the memo but told Gray that city agencies are &ldquo;working together to develop a monitoring and public education plan to reduce the risk of these concerns from developing into a major health crisis.&rdquo;</p>
+          <p>Combining both protests at Freedom Plaza would &ldquo;present some challenges,&rdquo; including increased costs and security needs, said <b>Kevin Zeese</b>, an organizer at that encampment. Moreover, he said, &ldquo;The two camps have different personalities and we do not want to lose the personality of Freedom Plaza.&rdquo; Zeese said he and his fellow protesters   are &ldquo;currently looking at how best to proceed if the mayor&rsquo;s vision becomes a reality.&rdquo;</p>
+        </div>
+        <div class="section">
+          <p>In his letter to Jarvis, Gray reiterated his <a target="_blank" href="http://www.washingtonpost.com/blogs/mike-debonis/post/gray-wants-feds-to-reimburse-occupy-expenses/2011/12/15/gIQAMl65vO_blog.html">requests for reimbursement</a> for the costs incurred by the protests and said the Freedom Plaza camp must be subject to &ldquo;regular safety and compliance checks.&rdquo; A mayoral spokesman, <b>Pedro Ribeiro</b>, declined to elaborate on the letter Thursday night.</p>
+          <p>Gray&rsquo;s attitude toward the protests has been complex and evolving. He has generally supported the activists&rsquo; right to protest, but he <a target="_blank" href="http://www.washingtonpost.com/local/dc-politics/dc-mayor-conflicted-by-occupy-movement/2011/12/22/gIQAVb54FP_story.html">told the Post last month</a> that he was confused by the Occupy movement&rsquo;s goals. &ldquo;What is frustrating for me, and I think of my own causes, is, what is the desired outcome here?&rdquo; Gray said. &ldquo;Where are you trying to get to? .&thinsp;.&thinsp;. You see signs that read, &lsquo;End corporate rule.&rsquo; Well, how do you do that?&rdquo;</p>
+          <p>More recently, Gray has <a target="_blank" href="http://www.washingtonpost.com/blogs/mike-debonis/post/dc-hunger-striker-persists-protest-branches-out/2011/12/30/gIQAycCwQP_blog.html">publicly welcomed the efforts</a> of several Occupy-affiliated protesters who launched a hunger strike in support of District autonomy.</p>
+          <p>City police have generally taken a hands-off stance toward protesters, mainly arresting those who have deliberately blocked traffic after ignoring official warnings. But Gray has had to deal with calls from D.C. business leaders who want the protests to end &mdash; such as Board of Trade CEO <b>Jim Dinegar</b>, who <a target="_blank" href="http://www.washingtonpost.com/blogs/mike-debonis/post/the-establishment-escalates-its-anti-occupy-rhetoric/2011/12/09/gIQA84GviO_blog.html">said in a December radio interview</a> that the city was being &ldquo;abused by the Occupiers&rdquo; and that McPherson Square would be &ldquo;a toxic waste dump&rdquo; after protesters leave.</p>
+          <p>Jewler noted that an influx of protesters is expected next week for an &rdquo;<a target="_blank" href="http://www.occupyyourcongress.info/">Occupy Congress</a>&rdquo; march set for Tuesday. &ldquo;If they think they&rsquo;re going to kick us out at that point, it&rsquo;s not going to be easy,&rdquo; he said. &ldquo;It&rsquo;s not going to be pretty.&rdquo;</p>
+        </div>
+        <div class="section">
+          <p>The letter:</p>
+          <div class="media">
+            <div id="DV-viewer-283231-vincent-gray-letter-to-national-park-service-1" class="DV-container"></div>
+            <script src="http://s3.documentcloud.org/viewer/loader.js"></script>
+            <script>DV.load('http://www.documentcloud.org/documents/283231-vincent-gray-letter-to-national-park-service-1.js', { width: 454, height: 550, sidebar: false, container: "#DV-viewer-283231-vincent-gray-letter-to-national-park-service-1" });</script>
+          </div>
+        </div>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">Wall Street Bankers Quitting To Start Their Own Businesses</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/13/wall-street-bank-tech-startups_n_1200373.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/13/wall-street-bank-tech-startups_n_1200373.html?ref=occupy-wall-street</a></p>
+          <p class="author"><a href="http://www.huffingtonpost.com/nathaniel-cahners-hindman">Nate C. Hindman</a></p>
+          <p class="date">1/13/12 01:50 AM ET</p>
+        </div>
+        <div class="section">
+          <p>Shane Robinson celebrated his Merrill Lynch job offer over lunch and cocktails at a trendy Manhattan restaurant. His bosses toasted him and asked what he planned to do with the $10,000 end-of-internship bonus. Robinson, then 24, in late 2007, said he would probably save it. "Why?" he recalls them asking. "Just go spend it -- you're going to make a lot more."</p>
+          <p>As the economy started to spiral downward less than six months later, bonuses dried up, layoffs ensued and the young banker was told by his superiors that he might want to begin looking for other opportunities. </p>
+          <p>"It left a bad taste in my mouth," Robinson says. "Why would I want to have my fate determined by things that are outside my control? If I'm going to fail, I would much rather fail because of my own doing." </p>
+          <p>Not long after the recession hit, Robinson decided to ditch finance. He contacted A.J. Steigman, a former Merrill Lynch colleague who had quit to start a sneaker store, and the two hashed out plans to create an urban clothing website that was part social network, part e-commerce. For months, they slept on friends' couches while fundraising in different cities. They spent countless hours online, building the core technology and a community around their <a href="http://soletron.com/blog/" target="_hplink">streetwear blog</a>. Finally, in 2010, the duo secured $265,000 from investors to make their startup <a href="http://soletron.com/" target="_hplink">Soletron</a> a reality.</p>
+          <p>Soletron's founders' path from high-finance to high-tech is becoming increasingly well-trodden, according to economists, venture capitalists and startup CEOs -- especially now, as we see some contraction once again on Wall Street, not to mention the stigma Occupy Wall Street protesters have bestowed on the "1 Percent." As <a href="http://www.huffingtonpost.com/2012/01/11/wall-street-workers_n_1199514.html?ref=business" target="_hplink">employee dissatisfaction spreads through the financial services industry</a> amid waning profits, slashed bonuses and layoffs, New York's <a href="http://www.nytimes.com/2011/11/20/nyregion/on-the-move-in-new-yorks-thriving-tech-sector.html?pagewanted=all" target="_hplink">bustling world of tech startups</a> is attracting and absorbing fed-up financiers, offering them jobs, cash and a shot at creating empires of their own.  </p>
+          <p>"At the end of 2008, we started seeing more people who graduated from college three or four years before, went to work at a large bank, but became disillusioned with Wall Street and were moving on to tech and entrepreneurship," says Matt Harris, a managing partner at <a href="http://www.villageventures.com/" target="_hplink">Village Ventures</a>, a Manhattan-based venture-capital firm. Harris says that over each of the past three years he has seen the flow of talent from Wall Street to Silicon Alley increase.  </p>
+        </div>
+        <div class="section important">
+          <p>For many Wall Street refugees, a "logical next step is technology and entrepreneurship," Harris says. That's because the world of tech startups "has some of the same elements as Wall Street," including the adrenaline, the high stakes and -- for a lucky few -- the outsized returns. Bankers "are accustomed to the prospect of being able to earn a really good living," he adds. "And while entrepreneurship is risky, when it works, it can really pay off."</p>
+        </div>
+        <div class="section unimportant">
+          <p>According to a <a href="http://techcrunch.com/2012/01/03/crunchbaseexits/" target="_hplink">recent study</a>, an average successful startup raises $25.3 million, sells for $196.8 million and gives its shareholders a 676 percent return. While those numbers represent a small percentage of all startups, they leave bankers, who have watched their salaries shrink and their colleagues get axed, squirming in their penny-loafers. </p>
+          <p>From 2008 to 2011, national employment in the financial services industry fell by 7.3 percent, while high-tech employment excluding manufacturing jumped 7.1 percent, according to the U.S. Bureau of Labor Statistics. </p>
+          <p>In startup hubs like New York, where large numbers of new tech companies have popped up in recent years, the trend is even more pronounced. </p>
+          <p>The number of investment bank and brokerage firm employees in New York dropped by <a href="http://www.nytimes.com/2011/12/28/opinion/wall-street-meets-reality.html?_r=1" target="_hplink">17 percent from 2008 to 2011</a>, according to analysis of government data by <em>The New York Times</em>. The number of bankers aged 20 to 34 fell by 25 percent in the same period. Meanwhile, in New York's high-tech sector, employment shot up by 30 percent from 2005 to 2010, city officials report.  </p>
+        </div>
+        <div class="section important">
+          <p>While <a href="http://dealbook.nytimes.com/2011/12/28/morgan-stanley-to-cut-580-jobs-in-new-york/" target="_hplink">layoffs at large Wall Street banks</a> continue to winnow the number of employees in New York's financial services sector, the allure of <a href="http://articles.businessinsider.com/2011-08-03/tech/30099673_1_private-equity-quadrangle-group-media-celebrities" target="_hplink">starting or joining technology firms</a> in a city where <a href="http://www.cbinsights.com/blog/venture-capital/2011-venture-capital-report" target="_hplink">Internet startup investments are soaring</a> has pushed some bankers to the exits.  </p>
+          <p>Glamorized media accounts of financiers turned successful startup CEOs provide added encouragement to professionally frustrated Wall Streeters. </p>
+        </div>
+        <div class="section">
+          <p>There's the poster-boy in Silicon Valley, Mark Pincus, who began his career as a lowly stock analyst, graduated into private equity, but ultimately dumped finance to launch Zynga, the social-gaming startup that recently <a href="http://www.huffingtonpost.com/2011/12/16/zynga-mark-pincus-ipo_n_1154424.html" target="_hplink">sold shares to the public at a $7 billion valuation</a>. </p>
+          <p>Then there are the homegrown New York stories of Wall Street number-crunchers who started some of the city's hottest startups, including Vinicius Vacanti, the founder of <a href="http://yipit.com/" target="_hplink">Yipit</a>, Andy Dunn of <a href="http://www.bonobos.com/" target="_hplink">Bonobos</a>, Alexa Von Tobel of <a href="http://www.learnvest.com/" target="_hplink">Learnvest</a> and Barry Silbert of <a href="http://www.SecondMarket.com" target="_hplink">SecondMarket</a>. </p>
+          <p>Silbert, for his part, spent the early part of his career as an investment banker selling off pieces of bankrupt Enron. He soon discovered that the way people buy and sell illiquid assets was ripe for disruption, and went on to build an online marketplace that facilitated such transactions. That marketplace, now known as SecondMarket, currently employs 140 people in New York, is worth an estimated <a href="http://online.wsj.com/article/SB10001424052970203707504577012303010455414.html" target="_hplink">$200 million</a> and has <a href="http://www.businessweek.com/magazine/content/11_18/b4226070179043.htm" target="_hplink">changed the way private-company shareholders trade their stock ahead of an initial public offering</a>. </p>
+        </div>
+        <div class="section">
+          <p>But for each successful startup that has grown out of a Wall Street hangover, or received a boost from ex-Wall Street talent, there are at least 100 new businesses that flop, creating and then ultimately destroying jobs. Some fear those numbers will grow as the threat of a <a href="http://online.wsj.com/article/SB10001424052970204450804576625043573078086.html" target="_hplink">startup credit crunch</a> becomes more real.</p>
+          <p>As such, some experts believe established tech giants like Google and Facebook -- rather than the droves of young New York-based startups -- are the drivers of the city's rising high-tech employment numbers. Facebook, for its part, is opening a large office in New York, the social network <a href="http://www.bloomberg.com/news/2011-12-02/facebook-to-open-new-york-engineering-office-as-web-site-prepares-for-ipo.html" target="_hplink">recently announced</a>, and Google already employs about <a href="http://www.economist.com/node/21542448" target="_hplink">1,200 engineers in the city</a>. </p>
+          <p>It's at these large technology companies, not at Goldman Sachs, where <a href="http://dealbook.nytimes.com/2011/11/21/wall-st-layoffs-take-heavy-toll-on-younger-workers/" target="_hplink">the new "status jobs" are</a>, a former Goldman analyst recently told <em>The New York Times</em>.    </p>
+        </div>
+        <div class="section">
+          <p>Regardless of which group draws more people away from Wall Street -- the tech giants or the tech startups -- Google and Facebook building engineering talent in New York is a net positive for the city's startup community, according to John Frankel, a partner at <a href="http://ffvc.com/" target="_hplink">ff Venture Capital</a>, who spent 21 years at Goldman Sachs before he became a full-time venture investor in 2008. </p>
+          <p>"Google and Facebook, much like Goldman, attract a lot of very smart people to New York," Frankel says. "And many ex-Googlers end up starting their own businesses here. Much like people in finance move from big Wall Street banks to hedge funds after a few years, folks often spend two to three years at Google, get fed up with whatever aspect there, and then go off and do their own thing."</p>
+          <p>In the past week alone, Frankel says several people currently employed on Wall Street have sought him for advice on transitioning into the tech sector. One, a 55-year-old banker, told Frankel that he's thinking about creating a group that helps funnel Wall Street refugees into positions at high-growth startups. (Arguably, those mechanisms already exist in the form of New York's <a href="http://www.quora.com/What-are-the-top-startup-incubators-in-NYC" target="_hplink">growing network of incubators and accelerators</a>, many of which have seen an increase in the number of applicants with finance backgrounds.)</p>
+        </div>
+        <div class="section">
+          <p>But perhaps the flow of talent from Wall Street to Silicon Alley, and more broadly, from financial services firms to entrepreneurial technology firms nationwide, is just a fad. After all, previous economic downturns have caused the financial services industry to shrink in the short-term. And perhaps this time around, it's just that the contraction is coinciding with a '90s-style tech startup bubble that will soon pop and send all the <a href="http://www.nytimes.com/2011/11/13/opinion/sunday/the-entrepreneurial-generation.html?_r=3&pagewanted=all" target="_hplink">Zuckerberg-wannabes</a> back to their trading desks.    </p>
+          <p>Harris, of Village Ventures, who was investing in startups in the immediate aftermath of the late-'90s bubble popping, is concerned about what exactly draws the best and brightest to startups in the age of Facebook. </p>
+          <p>"I think venture capitalists have been guilty of creating a monolithic and, on average, incorrect view of what entrepreneurship means," Harris says. "If entrepreneurship means building the next Facebook, then 99.9 percent of people involved are going to be really disappointed with the outcomes.</p>
+          <p>"But I don't think this is just a phase," he adds. "Entrepreneurship is about building a career for yourself that doesn't rely on a large corporation and a boss to give you direction and give you security and give you a paycheck. Whether you should raise venture capital is an open question. Whether the outcome is an acquisition or a merger or just a lifetime job in a company that you own part of or all of is another open question. In most cases, the answer is you should not raise venture capital and you should never sell the business -- this is just how you live." </p>
+          <p>"As for going to back to a world in which people just check their own initiative at the door of a large company when they take the job there and don't reemerge until they're laid off," Harris says, "people's thinking on that has changed."</p>
+        </div>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">Seven Occupy FIU Demonstrators Arrested At Planned Concert On Campus (WATCH)</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/13/seven-occupy-fiu-demonstr_n_1204178.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/13/seven-occupy-fiu-demonstr_n_1204178.html?ref=occupy-wall-street</a></p>
+          <p class="date">1/13/12 07:54 AM ET</p>
+        </div>
+        <div class="section important">
+          <div class="media">
+            <iframe width="640" height="360" src="http://www.youtube.com/embed/OEurcivN8LE?feature=player_embedded" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div class="section unimportant">
+          <p>MIAMI - Seven participants in an Occupy FIU event planned to remember the Haiti earthquake were arrested Thursday and charged with unlawful assembly. </p>
+        </div>
+        <div class="section important">
+          <p>The group, which included non-students and members of Occupy Miami, was gathered at the Deuxieme Maison pit on the school's main Modesto A. Maidique campus for the planned "Occupy FIU Art & Music Festival" when they were asked to move to another location. As a five-minute warning expired and an Occupy member was still relaying the message to the crowd using the repeat-after-me "people's mic" method, campus police moved in to make arrests. </p>
+          <p>"We were making no noise, there was nothing playing, it was really peaceful," <a href="http://fiusm.com/2012/01/12/7-arrested-at-occupy-fiu-music-festival/" target="_hplink">Occupy FIU member Victoria Aguila told FIUSM</a>. "When someone stood up to say 'let's go to the lawn,' they removed us. We were asked to leave, but when one of our members spoke up to try to get the people to the lawn, he was arrested."</p>
+        </div>
+        <div class="section">
+          <p>Occupy members say the FIU ombudsman told them a permit was not necessary, <a href="http://www.miamibeach411.com/news/Occupy-FIU" target="_hplink">but according to Miami Beach 411's Carlos Miller</a>, who was on the scene recording video, an hour of negotiation about whether Occupy could continue the concert in the pit without amplification eventually led to police giving the group five minutes to move to <a href="http://guc.fiu.edu/pdf/FreeAssemblyPolicy.pdf" target="_hplink">the school's designated "free assembly area."</a> </p>
+          <p>"Diplomacy is over," Miller reports police told FIU student William Sanchez, and the group began packing up and moving. Four minutes into the five minute warning, occupy member Philip Picaza, 22, began asking participants to contact the administration over the incident. <strong><strong>(Watch Miller's video of the incident above.)</strong></strong></p>
+          <p>"If anybody here is displeased about how things unfolded this afternoon, you're encouraged to write your school administrators," Picaza spoke into a bullhorn, before an officer told him he couldn't use any amplification. </p>
+        </div>
+        <div class="section">
+          <p>"Mic check!" he then yelled, and the crowd began to pass along the message by repeating after him. But as Picaza spoke, officers grabbed him by the arms and also began to lead other Occupy members away for arrest. </p>
+          <p>"Was it something I said?" Picaza asked, as the crowd broke into a very loud chant of "Shame on you!" at police. He and others including Jonathan Brand, 24, Alex Rosales, 22, Alfredo Quintana, 23, and Carlos Ortiz, 27, were booked in Miami-Dade's pre-trial detention center; records show each was being held on $500 bond. </p>
+        </div>
+        <div class="section">
+          <p>FIU spokeswoman Maydel Santana-Bravo <a href="http://www.miamiherald.com/2012/01/12/2587102/fiu-seven-people-arrested-at-occupy.html" target="_hplink">told the <em>Miami Herald</em></a> the arrests were made because the students did not have a permit to protest. "We asked them to stop, to move and leave. They refused," she said.</p>
+          <p>But Sanchez told the paper Occupy FIU held a event in the pit in November without issue, and the group had been told by the FIU ombudsman that no permit was needed. On a Facebook page about the arrests, <a href="http://www.facebook.com/events/288582994523561/" target="_hplink">activist Arianna Aguilar also claimed the group had permission to assemble</a>. </p>
+          <p>"This was an approved event by the FIU Administration under the condition that students and teachers did not complain about noise levels," she wrote. <a href="http://www.facebook.com/events/288582994523561/" target="_hplink">Occupy FIU plans to protest the arrests on Friday</a>, following a night<a href="http://www.facebook.com/photo.php?fbid=274906099238554&set=a.217824944946670.57554.216848385044326&type=1" target="_hplink"> some members spent in a tent </a> <a href="http://www.facebook.com/photo.php?fbid=274890102573487&set=a.217824944946670.57554.216848385044326&type=1" target="_hplink">outside the detention center</a>. </p>
+          <p>"Other student groups get to play music very loudly till very late," Aguilar wrote, "and many people use the DM pit for playing music without a permit as well. Yet the administration only goes against Occupy FIU."</p>
+        </div>
+      </div>
+      <div class="article">
+        <div class="header">
+          <h2 class="title">Occupy DC Passes Corporate Personhood Resolution</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/15/occupy-dc-passes-corporate-personhood-resolution_n_1207041.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/15/occupy-dc-passes-corporate-personhood-resolution_n_1207041.html?ref=occupy-wall-street</a></p>
+          <p class="author"><a href="http://www.huffingtonpost.com/arin-greenwood">Arin Greenwood</a></p>
+          <p class="date">1/15/12 02:04 PM ET</p>
+        </div>
+        <div class="section important">
+          <div class="media">
+            <img width="260" height="190" src="http://i.huffpost.com/gen/466229/thumbs/s-OCCUPY-DC-large.jpg" alt="Occupy Dc">
+          </div>
+          <p class="caption">A sign found at the Occupy DC encampment in McPherson Square.</p>
+        </div>
+        <div class="section">
+          <p>WASHINGTON -- Occupy DC's General Assembly passed a "<a href="http://occupydc.org/personhood/" target="_hplink">corporate personhood resolution</a>" on Saturday calling for a constitutional amendment ending the "judicial fiction of corporate Constitutional rights." </p>
+        </div>
+        <div class="section important">
+          <p>The resolution calls on Congress to "enact" the amendment (though it should be noted that Congress can't actually <a href="http://www.lexisnexis.com/constitution/amendments_howitsdone.asp" target="_hplink">enact a Constitutional amendment</a> on its own -- once two-thirds of both houses vote for the amendment, then the states also have to ratify it).</p>
+          <p>The proposed amendment would also require "Congress to regulate campaign finance" and would mandate "public financing of public elections." The resolution contains other "non-amendment solutions" for untangling money and politics as well: </p>
+        </div>
+        <div class="section">
+          <blockquote>
+            <p>In 2010, the United States Supreme Court decided in Citizens United v. Federal Election Commission that independent spending on elections by corporations and other groups could not be limited by government regulations. This decision is only the latest in a long line of judicial rulings that have invented the legal doctrine of corporate personhood, affording corporations the same constitutional rights as people. The corrupting influence of money in politics, exacerbated by corporate personhood, subverts democracy. The Supreme Court has enshrined corporate personhood and interpreted the First Amendment to prohibit Congress from regulating money in politics. The only way to reverse these rulings is an amendment to the Constitution.</p>
+            <p>We support an amendment that does the following:</p>
+            <p>Ends the judicial fiction of corporate Constitutional rights.<br />Requires Congress to regulate campaign finance.<br />Mandates public financing of public elections.<br />We also support these non-amendment solutions:</p>
+            <p>Ending the revolving door between lobbyists and the executive and legislative branches of the government.<br />Restructuring the Federal Election Commission to give it prosecutorial power and neutral, non-political commissioners.Requiring the disclosure and complete transparency of all independent political expenditures.<br />Banning lobbyists from acting as either fundraisers or bundlers.<br />We implore the DC city council, the Maryland legislature, the Virginia legislature and all legislative bodies to pass resolutions calling on Congress to enact an amendment and other solutions.</p>
+            <p>We call on all people to exercise their civic duty by taking action, where possible, against corporate personhood and the corrupting influence of money in politics without waiting for the government to fix itself.</p>
+            <p>Occupy DC reserves the right to oppose an amendment or other solution even if it adheres to the provisions above.</p>
+            <p>Consent to this proposal does not require that an individual be completely in line with every piece of the proposed solution.</p>
+            <p>This concern is one of many that Occupy DC will address. More solutions are forthcoming.</p>
+          </blockquote>
+        </div>
+        <div class="section">
+          <p>Occupy DC is planning to participate in "<a href="http://movetoamend.org/occupythecourts" target="_hplink">Occupy the Courts</a>," a one-day protest taking place on Friday at the Supreme Court, as well as at other federal courts around the country. <em>Citizens United</em> was decided on Jan. 21, 2010.</p>
+          <p>Occupy DC also plans to ask the <a href="http://www.dccouncil.washington.dc.us/" target="_hplink">District of Columbia Council</a> to pass an anti-corporate personhood resolution, similar to the resolutions passed by <a href="http://www.huffingtonpost.com/2012/01/05/new-york-city-council-pas_n_1186411.html" target="_hplink">the New York City Council</a> and <a href="http://latimesblogs.latimes.com/lanow/2011/12/corporate-personhood-la-constitutional-amendment.html" target="_hplink">the Los Angeles City Council</a>. </p>
+        </div>
+        <div class="section unimportant">
+          <p>Historical sidenote: The last amendment to become part of the U.S. Constitution is the <a href="http://caselaw.lp.findlaw.com/data/constitution/amendment27/" target="_hplink">27th Amendment</a>. This amendment says that if Congress votes to give itself a pay raise, the raise doesn't take effect until the following Congress (in other words, if the 112th Congress votes for a pay raise, the 113th Congress gets the raise). The amendment was first introduced in 1789. It became <a href="http://www.archives.gov/exhibits/charters/constitution_amendment_27.html" target="_hplink">fully ratified in 1992</a>.</p>
+          <p><strong>RELATED VIDEO: The trailer for "<a href="http://www.hillarythemovie.com/" target="_hplink">Hillary: The Movie</a>" -- the film at the center of the <em>Citizens United</em> lawsuit.</strong></p>
+          <div class="media">
+            <iframe width="560" height="315" src="http://www.youtube.com/embed/BOYcM1z5fTs" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="article hidden" id="occupy-la">
+        <div class="header">
+          <h2 class="title">Occupy Los Angeles Protester Sergio Ballesteros Arrested At Artwalk For Alleged Lynching</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/16/sergio-ballesteros-occupy-la-arrest_n_1208985.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/16/sergio-ballesteros-occupy-la-arrest_n_1208985.html?ref=occupy-wall-street</a></p>
+          <p class="date">1/16/12 03:05 PM ET</p>
+        </div>
+        <div class="section important">
+          <div class="media">
+            <iframe width="420" height="315" src="http://www.youtube.com/embed/8UAj4Ohsce4" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div class="section important">
+          <p>Los Angeles' bi-weekly art walk recently got a taste of the confrontations between Occupy protesters and the LAPD. </p>
+          <p>The video above begins in the middle of a chaotic scene, making it difficult to verify what prompted the scuffle, but LAist <a href="http://laist.com/2012/01/15/occupy_la_protester_arrested_at_art.php" target="_hplink">reports</a> that Sergio Ballesteros was indeed arrested and is currently in custody with bail set at $50,000. </p>
+        </div>
+        <div class="section important">
+          <p>According to LAist and Sue Basko, a lawyer who has been <a href="http://www.occupylosangeles.org/?q=node/3963" target="_hplink">advising</a> Occupy L.A., police were monitoring a crowded sidewalk when a drummer thus far only identified as Adam stepped off the curb. Police then immediately swarmed and arrested Adam, according to Basko.  </p>
+          <p>In the ensuing frenzy, police appear to have knocked Ballesteros and a woman Bask identifies as Ballestero's girlfriend to the ground. Ballesteros is then arrested and charged with "lynching," which the California penal code defines as "the taking by means of a riot of any person from the lawful custody of any peace officer."</p>
+        </div>
+        <div class="section">
+          <p>Basko notes that the charge appears to be a flimsy one, at best. Here's what she wrote on the movement's website:</p>
+          <blockquote>The police would have to be saying there was a riot, which does not seem to be the case, unless you count police behavior.  Two or more people would have to be engaging in this riot and using it to take someone from police custody.  Who are the two people?  Where is the riot?  Who was in police custody and was taken from it?  Sergio alone cannot be engaging in a lynching, because it takes two or more people. None of these things appear to have happened.</blockquote>
+          <p>Basko and LAist also note that Ballesteros had recently appeared on an MSNBC program, where he argued in the movement's favor, leading the attorney to speculate that he had been "cherrypicked" by police for his mainstream visibility. MSNBC's bio for Ballesteros <a href="http://nbcpolitics.msnbc.msn.com/_news/2011/12/13/9424662-tea-and-occupy-a-discussiondebate-between-members-of-the-two-movements" target="_hplink">describes</a> him as a former high school teacher and current UCLA graduate student studying urban teaching. </p>
+        </div>
+        <div class="section">
+          <p>After their encampment was cleared in a November 30 <a href="http://www.huffingtonpost.com/2011/11/30/occupy-la-raid_n_1116424.html" target="_hplink">raid that led to over 200 arrests</a>, Occupy Los Angeles has mostly made news for <a href="http://www.huffingtonpost.com/2012/01/02/occupy-the-rose-parade-pr_n_1179519.html" target="_hplink">its participation in the Rose Parade</a> and a city <a href="http://www.huffingtonpost.com/2011/12/24/occupy-la-costs-at-least-_n_1168872.html" target="_hplink">report</a> which claimed that the movement has cost the city $2.3 million. </p>
+        </div>
+        <div class="section unimportant">
+          <p>The greater Occupy California movement is comprised of as many as 150 groups, <a href="http://www.huffingtonpost.com/2011/12/19/150-california-occupy-uc-riverside_n_1158421.html" target="_hplink">according to a report</a> by the University of California at Riverside. The study found the groups nearly equally divided across the northern and southern parts of the state. </p>
+          <p>Basko herself has recently made headlines when she <a href="http://www.huffingtonpost.com/2012/01/11/occupy-la-trademark_n_1199422.html" target="_hplink">discovered</a> that a number of companies were attempting to trademark Occupy Los Angeles' name and slogans. </p>
+        </div>
+      </div>
+
+      <div class="article hidden" id="occupy-mlk">
+        <div class="header">
+          <h2 class="title">Occupy Wall Street Protesters Hold Candlelight Vigil For Martin Luther King Jr. In New York</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/16/occupy-wall-street-protester-martin-luther-king_n_1208975.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/16/occupy-wall-street-protester-martin-luther-king_n_1208975.html?ref=occupy-wall-street</a></p>
+          <p class="date">1/16/12 01:54 PM ET</p>
+        </div>
+        <div class="section unimportant">
+          <div class="media">
+            <img width="300" heigh="219" src="http://i.huffpost.com/gen/467260/thumbs/s-OCCUPY-WALL-STREET-MARTIN-LUTHER-KING-large300.jpg" id="img_caption_1208975" alt="Occupy Wall Street Martin Luther King" />
+          </div>
+          <p class="caption">Deloris Blakeley, right, the honorary mayor of the community of Harlem, walks with other marchers, including Occupy Wall Street protesters, as they take part in a candlelight vigil and march to honor Rev. Martin Luther King, Jr. in New York, Sunday, Jan. 15, 2012. The march started at Cathedral Church of Saint John the Divine and ended at nearby Riverside Church where a ceremony took place with speeches, song and poetry honoring the civil right leader. (AP Photo/Craig Ruttle)</p>
+        </div>
+        <div class="section important">
+          <p>As part of a coordinated. <a href="http://www.nycga.net/events/event/j15-mlk-day-worldwide-candlelight-vigil-for-change/" target="_hplink">global series of vigils</a> on Sunday, January 15th in honor of Martin Luther King Jr, <a href="http://twitpic.com/87t7o6" target="_hplink">hundreds</a> of Occupy Wall Street protesters in New York marched by candlelight from the Cathedral Church of Saint John the Divine to the nearby Riverside church in Harlem. In 1967, MLK delivered his famous "<a href="http://www.youtube.com/watch?v=XBKmNXuz0no" target="_hplink">Beyond Vietnam</a>" speech at the Riverside Church.</p>
+        </div>
+        <div class="section">
+          <p>According to <a href="http://gothamist.com/2012/01/16/photos_ows_vigil_for_mlk_at_riversi.php#photo-1" target="_hplink">Gothamist</a>, there were performances by "Patti Smith, Steve Earle, Stephan Said, Global Block, and St. Christopher's Gospel Choir, among others. Russell Simmons, civil rights attorney Norman Siegel, Dr. Benjamin Chavis, Jr. and Sumumba Sobukwe addressed the crowd." </p>
+          <p>Occupy the Hood representative Malik Rhasaan noted during his speech that "the Occupy movement was built on the back of" Dr. King.</p>
+        </div>
+        <div class="section important">
+          <p>Leading up to the event, protester Abigail Keegan explained OWS' relationship to King. "Poverty, an issue to which King showed increased focus in the years just before his death, finds its way into the darkest chapters in American History," she said in a statement. "Dr. King sought to shine a light of justice against those dark chapters of war, repression and racism, our candles symbolize that light."</p>
+        </div>
+        <div class="section">
+          <p>More Occupy <a href="http://www.nycga.net/events/event/jan-16th-reclaim-mlk-a-journey-of-liberation-from-the-african-burial-ground/" target="_hplink">events </a>honoring MLK are scheduled for Monday, Martin Luther King Jr. Day, and will help kick off 3 months of action from <a href="http://www.occupythedream.org/" target="_hplink">OCCUPY THE DREAM</a>, a collection of black community church groups, which will ultimately culminate in a large rally in DC on April 12-15th:</p>
+        </div>
+      </div>
+      <div class="article hidden" id="occupy-davos">
+        <div class="header">
+          <h2 class="title">Occupy Davos: Protesters Ready Igloos For World Economic Forum</h2>
+          <p class="url"><a target="_blank" href="http://www.huffingtonpost.com/2012/01/16/occupy-davos-world-economic-forum_n_1208647.html?ref=occupy-wall-street">http://www.huffingtonpost.com/2012/01/16/occupy-davos-world-economic-forum_n_1208647.html?ref=occupy-wall-street</a></p>
+          <p class="author">Emma Thomasson</p>
+          <p class="date">1/16/12 11:50 AM ET</p>
+        </div>
+        <div class="section important">
+          <p>DAVOS, Switzerland, Jan 16 (Reuters) - Occupy  protesters with their sights set on the World Economic Forum,  the annual gathering next week of the rich and powerful in the  Swiss ski resort of Davos, unveiled their igloo accommodation on  Monday.</p>
+          <p>When fully erected, Camp Igloo will include two heated  teepees and a field kitchen alongside the ice houses to sleep  about 50 people in sub-zero temperatures, activists said.</p>
+        </div>
+        <div class="section">
+          <p>Davos, which brings together politicians, central bankers  and business leaders, has become a byword for globalisation.</p>
+        </div>
+        <div class="section">
+          <p>The Occupy Wall Street movement burst onto the scene last  year to focus attention on income inequality and the perceived  greed of the rich and powerful. Copy-cat protests sprung up in  cities around the United States and worldwide.</p>
+          <p>But authorities have cleared many tented encampments and the  movement has lost some momentum during the northern hemisphere  winter.</p>
+        </div>
+        <div class="section unimportant">
+          <p>"It is the decisions of the few which have led us into the  crisis of recent years and now the same people are posing as the  solution to these problems," David Roth, president of the youth  wing of the Swiss Social Democrats, told reporters at Camp  Igloo, near the Davos train station.</p>
+          <p>"This is the wrong solution as it is undemocratic and  cynical. Democracy is not only the right path for the Arab  states but is also urgently needed again in the West."</p>
+        </div>
+        <div class="section important">
+          <p>The Swiss campaigners invited activists from around the  world to join them at the camp, being set up with permission in  a car park outside the tight security cordon that surrounds the  World Economic Forum meeting.</p>
+        </div>
+        <div class="section unimportant">
+          <p>"Don't let them decide for you! Occupy WEF!" read a banner  draped across the first igloo, which took five hours to build.</p>
+          <p>Speaking at a podium made of snow blocks, Roth said they  planned to build several more igloos, each sleeping two people,  and pitch two heated teepees and a field kitchen.</p>
+          <p>He said he was in contact with WEF organisers to promote  dialogue with delegates at the meeting.</p>
+        </div>
+        <div class="section">
+          <p>In its Global Risk Report released last week, the WEF cited  rising inequality as one of the biggest threats to the world  economy in coming years.</p>
+        </div>
+      </div>
+      <div class="after-count">
+        <span class="arrow">&darr;</span>
+        <span class="count">&nbsp;&nbsp;</span>
+        articles after this one...
+        <span class="small">use timeline (&larr;) to expand</span>
+      </div>
+      <div class="controls">
+        <span class="arrow">&uarr;</span> <a href="#body">Back to top</a>
+      </div>
+    </div>
+  </body>
+</html>
